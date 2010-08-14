@@ -1,0 +1,55 @@
+*tselectfiles.txt*  A simplicistic files selector/browser (sort of)
+
+
+This plugin provides a simple file browser. It is not a full blown 
+explorer but can be nevertheless be useful for quickly selecting a few 
+files or renaming them.
+
+As the plugin does some caching in the background, the filelist is only 
+generated once for each path or when called with [!]. In conjuncture 
+with the use of the [wbg]:tselectfile_filter_rx variable, this provides 
+for use as a simple ad-hoc project manager.
+
+EXAMPLE:
+When opening a file under "~/vimfiles", I set b:tselectfiles_dir 
+to all the relevant directories under "~/vimfiles" and then set 
+b:tselectfile_filter_rx = expand('%%:t:r'). Thus, when I open 
+"~/vimfiles/plugin/foo.vim", b:tselectfile_filter_rx is "foo", and 
+:TSelectFiles shows all the files under "~/vimfiles" matching "foo".
+
+Features:
+    - list files (recursively or the in the current directory only), 
+      dynamically select files matching a pattern
+    - open files
+    - preview files
+    - rename/move files
+    - batch rename/move files (using a regular expression)
+    - copy files
+    - delete files
+    - show file info
+
+Advanced uses:
+
+Related files: If you set |g:tselectfiles_filter_rx| to some appropriate 
+value, only files matching that regexp will be shown initially. This can 
+be used to restrict the list to "related" files. (The initial filter can 
+be removed by pressing <c-bs>.) See also |tselectfiles#BaseFilter()| and 
+|g:tselectfiles_part_subst|.
+
+Rolodex: If a filename matches an entry in 
+|g:tselectfiles_filedescription_rx| (a dictionnary patter => funcref), 
+funcref(filename) will be called to retrieve the file's description. 
+This function could be used to extract metadata or selected lines from 
+the file etc. By mapping one record onto one file, you would get some 
+sort of rolodex-like database. See 
+|tselectfiles#FormatVikiMetaDataOrFirstLine()| for an example for 
+viki/deplate (vimscript #861) formatted files.
+
+
+-----------------------------------------------------------------------
+
+Status:  Works for me (there may be some minor quirks)
+Dependencies: vimtlib
+Install: See http://github.com/tomtom/vimtlib/blob/master/INSTALL.TXT
+See http://github.com/tomtom for related plugins.
+
