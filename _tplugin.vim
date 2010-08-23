@@ -1,1 +1,1 @@
-TPluginBefore tselectfiles_vim/.+?.vim$ @vimtlib
+TPluginBefore tselectfiles_vim[\/].+?\.vim$ @tlib_vim

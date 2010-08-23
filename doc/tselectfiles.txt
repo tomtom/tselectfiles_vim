@@ -178,8 +178,9 @@ g:tselectfiles_world           (default: {)
 g:tselectfiles_suffixes        (default: printf('\(%s\)\$', join(map(split(&suffixes, ','), 'v:val'), '\|')))
 
                                                     *g:tselectfiles_hidden_rx*
-g:tselectfiles_hidden_rx       (default: '\V\(/.\|/CVS/\|/.attic/\|/.svn/\|/vimfiles\(/\[^/]\+\)\{-}/cache/\|'. tlib#rx#Suffixes('V') .'\)')
+g:tselectfiles_hidden_rx       (default: '\V\(/tags\$\|/CVS/\|/.attic/\|/.svn/\|/\(vimfiles\|.vim\)\(/\[^/]\+\)\{-}/cache/\|'. tlib#rx#Suffixes('V') .'\)')
     Don't include files matching this regexp.
+    TLet g:tselectfiles_hidden_rx = '\V\(/.\|/CVS/\|/.attic/\|/.svn/\|/\(vimfiles\|.vim\)\(/\[^/]\+\)\{-}/cache/\|'. tlib#rx#Suffixes('V') .'\)'
 
                                                     *g:tselectfiles_show_quickfix_list*
 g:tselectfiles_show_quickfix_list (default: 'TRagcw')
