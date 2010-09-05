@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-10-15.
-" @Last Change: 2010-06-17.
-" @Revision:    0.0.316
+" @Last Change: 2010-09-05.
+" @Revision:    0.0.320
 
 " call tlog#Log('Load: '. expand('<sfile>')) " vimtlib-sfile
 
@@ -351,6 +351,7 @@ function! tselectfiles#AgentPreviewFile(world, selected)
         call s:ClosePreview()
         let a:world.state = 'display'
     endif
+    redraw
     return a:world
 endf
 
