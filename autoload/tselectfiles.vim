@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-10-15.
 " @Last Change: 2010-09-05.
-" @Revision:    0.0.320
+" @Revision:    0.0.324
 
 " call tlog#Log('Load: '. expand('<sfile>')) " vimtlib-sfile
 
@@ -473,7 +473,7 @@ function! tselectfiles#FormatFirstLine(filename) "{{{3
 endf
 
 
-function! tselectfiles#FormatVikiMetaDataOrFirstLine(filename) "{{{3
+function! tselectfiles#FormatVikiMetaDataOrFirstLine(world, filename) "{{{3
     " TLogVAR a:filename
     if filereadable(a:filename)
         let lines = readfile(a:filename)
@@ -487,6 +487,12 @@ function! tselectfiles#FormatVikiMetaDataOrFirstLine(filename) "{{{3
                     let cont = 1
                 endif
                 if l =~ '\S'
+                    if has('iconv')
+                        let fenc = get(a:world, 'fileencoding', '')
+                        if !empty(fenc) && fenc != &enc
+                            let l = iconv(l, fenc, &enc)
+                        endif
+                    end
                     call add(acc, l)
                 endif
             else
@@ -523,6 +529,7 @@ function! tselectfiles#FormatEntry(world, filename) "{{{3
             break
         endif
     endfor
+    let world = a:world
     " TLogVAR display_format
     return eval(call(function("printf"), a:world.FormatArgs(display_format, filename)))
 endf
