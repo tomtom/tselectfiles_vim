@@ -3,49 +3,50 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-10-15.
-" @Last Change: 2010-09-05.
-" @Revision:    0.0.324
+" @Last Change: 2010-09-06.
+" @Revision:    0.0.329
 
 " call tlog#Log('Load: '. expand('<sfile>')) " vimtlib-sfile
 
 
 " Whether to cache directory listings (in memory). (per buffer, global)
 " If 0, disable the use of cached file listings all together.
-TLet g:tselectfiles_use_cache = 1
+TLet g:tselectfiles#use_cache = 1
 
 " Don't use the cache for directories matching this rx. (per buffer, 
 " global)
-TLet g:tselectfiles_no_cache_rx = ''
+TLet g:tselectfiles#no_cache_rx = ''
 
 " Retain only files matching this regexp. (per window, per buffer, global)
 " Regexp |magic| must match the setting of |g:tlib_inputlist_match|.
 " Check: :echo tlib#Filter_{g:tlib_inputlist_match}#New().FilterRxPrefix()
-TLet g:tselectfiles_filter_rx = ''
+TLet g:tselectfiles#filter_rx = ''
 
 " In |tselectfiles#BaseFilter()|, rewrite name parts according to these 
 " rules.
-TLet g:tselectfiles_part_subst = {}
+TLet g:tselectfiles#part_subst = {}
 " Poor man's singularize etc.
-TLet g:tselectfiles_part_subst_ruby = {'s$': '', '^\(controller\|test\|spec\)$': ''}
+TLet g:tselectfiles#part_subst_ruby = {'s$': '', '^\(controller\|test\|spec\)$': ''}
 
 " The max depth when globbing directories recursively. 0 = no limit.
-TLet g:tselectfiles_limit = 0
+TLet g:tselectfiles#limit = 0
 
-" A dictionary of REGEXP => FUNCREF(filename) -> String describing the 
-" file (DEFAULT: the filename).
-TLet g:tselectfiles_filedescription_rx = {}
+" A dictionary of REGEXP => "FUNCTION(%s)" where FUNCTION is the name of 
+" a function that is used to describe a file -- by default this is the 
+" filename.
+TLet g:tselectfiles#filedescription_rx = {}
 
 " Apply filters to basename only.
-TLet g:tselectfiles_filter_basename = 0
+TLet g:tselectfiles#filter_basename = 0
 
 " Remove prefix from filenames in list.
 " buffer-local, global
-TLet g:tselectfiles_prefix = ''
+TLet g:tselectfiles#prefix = ''
 
 " Use these dirs (a comma separated list, see |globpath()|). (per window, per buffer, global)
-" TLet g:tselectfiles_dir = ''
+" TLet g:tselectfiles#dir = ''
 
-TLet g:tselectfiles_world = {
+TLet g:tselectfiles#world = {
             \ 'type': 'm',
             \ 'query': 'Select files',
             \ 'scratch': '__tselectfiles__',
@@ -74,48 +75,48 @@ TLet g:tselectfiles_world = {
             \ }
             " \ 'scratch_vertical': (&lines > &co),
 
-TLet g:tselectfiles_suffixes = printf('\(%s\)\$', join(map(split(&suffixes, ','), 'v:val'), '\|'))
+TLet g:tselectfiles#suffixes = printf('\(%s\)\$', join(map(split(&suffixes, ','), 'v:val'), '\|'))
 
 " Don't include files matching this regexp.
-" TLet g:tselectfiles_hidden_rx = '\V\(/.\|/CVS/\|/.attic/\|/.svn/\|/\(vimfiles\|.vim\)\(/\[^/]\+\)\{-}/cache/\|'. tlib#rx#Suffixes('V') .'\)'
-TLet g:tselectfiles_hidden_rx = '\V\(/tags\$\|/CVS/\|/.attic/\|/.svn/\|/\(vimfiles\|.vim\)\(/\[^/]\+\)\{-}/cache/\|'. tlib#rx#Suffixes('V') .'\)'
+" TLet g:tselectfiles#hidden_rx = '\V\(/.\|/CVS/\|/.attic/\|/.svn/\|/\(vimfiles\|.vim\)\(/\[^/]\+\)\{-}/cache/\|'. tlib#rx#Suffixes('V') .'\)'
+TLet g:tselectfiles#hidden_rx = '\V\(/tags\$\|/CVS/\|/.attic/\|/.svn/\|/\(vimfiles\|.vim\)\(/\[^/]\+\)\{-}/cache/\|'. tlib#rx#Suffixes('V') .'\)'
 if has('win16') || has('win32') || has('win64')
-    let g:tselectfiles_hidden_rx = substitute(g:tselectfiles_hidden_rx, '/', '\\[\\/]', 'g')
+    let g:tselectfiles#hidden_rx = substitute(g:tselectfiles#hidden_rx, '/', '\\[\\/]', 'g')
 endif
-" TLet g:tselectfiles_skip_rx = tlib#rx#Suffixes('V')
+" TLet g:tselectfiles#skip_rx = tlib#rx#Suffixes('V')
 
 " " TODO: cwindow doesn't currently work as expected
-" TLet g:tselectfiles_show_quickfix_list = exists(':TRagcw') ? 'TRagcw' : 'cwindow'
+" TLet g:tselectfiles#show_quickfix_list = exists(':TRagcw') ? 'TRagcw' : 'cwindow'
 if exists(':TRagcw')
     " The command that is run to show the quickfix list after running grep.
-    TLet g:tselectfiles_show_quickfix_list = 'TRagcw'
+    TLet g:tselectfiles#show_quickfix_list = 'TRagcw'
 endif
 
-" TLet g:tselectfiles_dir_edit = 'TSelectFiles'
+" TLet g:tselectfiles#dir_edit = 'TSelectFiles'
 " 
-" if !empty(g:tselectfiles_dir_edit)
+" if !empty(g:tselectfiles#dir_edit)
 "     if exists('g:loaded_netrwPlugin')
 "         au! FileExplorer BufEnter
 "     endif
 "     augroup TSelectFiles
 "         autocmd!
-"         autocmd BufEnter * silent! if isdirectory(expand("<amatch>")) | exec g:tselectfiles_dir_edit .' '. expand("<amatch>") | endif
+"         autocmd BufEnter * silent! if isdirectory(expand("<amatch>")) | exec g:tselectfiles#dir_edit .' '. expand("<amatch>") | endif
 "     augroup END
 " endif
 
 
-if !exists('g:tselectfiles_favourites')
+if !exists('g:tselectfiles#favourites')
     if has('win16') || has('win32') || has('win64')
-        let g:tselectfiles_favourites = ['c:/', 'd:/']
+        let g:tselectfiles#favourites = ['c:/', 'd:/']
     else
-        let g:tselectfiles_favourites = []
+        let g:tselectfiles#favourites = []
     endif
     if !empty($HOME)
-        call add(g:tselectfiles_favourites, $HOME)
+        call add(g:tselectfiles#favourites, $HOME)
     endif
     if !empty($USERPROFILE)
-        call add(g:tselectfiles_favourites, $USERPROFILE)
-        " call add(g:tselectfiles_favourites, $USERPROFILE .'/desktop/')
+        call add(g:tselectfiles#favourites, $USERPROFILE)
+        " call add(g:tselectfiles#favourites, $USERPROFILE .'/desktop/')
     endif
 endif
 
@@ -141,9 +142,9 @@ function! s:PrepareSelectFiles(hide)
         endif
     endfor
     " TLogVAR rv
-    if a:hide && !empty(g:tselectfiles_hidden_rx)
-        call filter(rv, 'v:val !~ g:tselectfiles_hidden_rx')
-        " TLogVAR g:tselectfiles_hidden_rx, rv
+    if a:hide && !empty(g:tselectfiles#hidden_rx)
+        call filter(rv, 'v:val !~ g:tselectfiles#hidden_rx')
+        " TLogVAR g:tselectfiles#hidden_rx, rv
     endif
     " call TLogDBG(string(s:select_files_pattern))
     if s:select_files_pattern.mode == 'r'
@@ -158,7 +159,7 @@ function! s:PrepareSelectFiles(hide)
         endif
     else
         call sort(map(rv, 'isdirectory(v:val) ? v:val."/" : v:val'))
-        let rv += g:tselectfiles_favourites
+        let rv += g:tselectfiles#favourites
         " TLogVAR rv
         " call TLogDBG(string(split(s:select_files_dir, '[^\\]\zs,')))
         for phf in split(s:select_files_dir, '[^\\]\zs,')
@@ -184,8 +185,8 @@ endf
 
 
 function! s:UseCache() "{{{3
-    let use_cache = tlib#var#Get('tselectfiles_use_cache', 'bg')
-    let no_cache  = tlib#var#Get('tselectfiles_no_cache_rx', 'bg')
+    let use_cache = tlib#var#Get('tselectfiles#use_cache', 'bg')
+    let no_cache  = tlib#var#Get('tselectfiles#no_cache_rx', 'bg')
     let rv = use_cache && (empty(no_cache) || s:select_files_dir !~ no_cache)
     " TLogVAR rv
     return rv
@@ -305,8 +306,8 @@ function! tselectfiles#Grep(world, selected)
                 exec 'silent! vimgrepadd /'. escape(grep_pattern, '/') .'/j '. tlib#arg#Ex(filename)
             endif
         endfor
-        if !empty(getqflist()) && !empty(g:tselectfiles_show_quickfix_list)
-            exec g:tselectfiles_show_quickfix_list
+        if !empty(getqflist()) && !empty(g:tselectfiles#show_quickfix_list)
+            exec g:tselectfiles#show_quickfix_list
         endif
     endif
     call a:world.ResetSelected()
@@ -432,7 +433,7 @@ endf
 
 
 function! tselectfiles#AgentSelectBackups(world, selected)
-    let a:world.filter = g:tselectfiles_suffixes
+    let a:world.filter = g:tselectfiles#suffixes
     let a:world.state  = 'display'
     return a:world
 endf
@@ -522,7 +523,7 @@ function! tselectfiles#FormatEntry(world, filename) "{{{3
         let filename = '...' . filename[prefix_end + 1 : -1]
     endif
     " TLogVAR filename
-    for [rx, fn] in items(g:tselectfiles_filedescription_rx)
+    for [rx, fn] in items(g:tselectfiles#filedescription_rx)
         " TLogVAR rx, fn
         if filename =~ rx
             let a:world.display_as_filenames = 0
@@ -564,7 +565,7 @@ function! tselectfiles#SelectFiles(mode, ...)
         let s:select_files_dir = escape(fnamemodify(dir, ':p:h'), ',')
     endif
     " call TLogVAR('s:select_files_dir=', s:select_files_dir)
-    let world = copy(g:tselectfiles_world)
+    let world = copy(g:tselectfiles#world)
     let world.state_handlers = [
                 \ {'state': '\<reset\>', 'exec': 'call tselectfiles#GetFileList(world, '. string(a:mode) .')'},
                 \ ]
