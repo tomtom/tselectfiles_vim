@@ -473,7 +473,7 @@ function! tselectfiles#FormatFirstLine(filename) "{{{3
 endf
 
 
-function! tselectfiles#FormatVikiMetaDataOrFirstLine(world, filename) "{{{3
+function! tselectfiles#FormatVikiMetaDataOrFirstLine(filename, ...) "{{{3
     " TLogVAR a:filename
     if filereadable(a:filename)
         let lines = readfile(a:filename)
@@ -487,8 +487,9 @@ function! tselectfiles#FormatVikiMetaDataOrFirstLine(world, filename) "{{{3
                     let cont = 1
                 endif
                 if l =~ '\S'
-                    if has('iconv')
-                        let fenc = get(a:world, 'fileencoding', '')
+                    if has('iconv') && a:0 >= 1
+                        let world = a:1
+                        let fenc = get(world, 'fileencoding', '')
                         if !empty(fenc) && fenc != &enc
                             let l = iconv(l, fenc, &enc)
                         endif
