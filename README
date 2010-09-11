@@ -30,20 +30,20 @@ Features:
 
 Advanced uses:
 
-Related files: If you set |g:tselectfiles_filter_rx| to some appropriate 
+Related files: If you set |g:tselectfiles#filter_rx| to some appropriate 
 value, only files matching that regexp will be shown initially. This can 
 be used to restrict the list to "related" files. (The initial filter can 
 be removed by pressing <c-bs>.) See also |tselectfiles#BaseFilter()| and 
-|g:tselectfiles_part_subst|.
+|g:tselectfiles#part_subst|.
 
 Rolodex: If a filename matches an entry in 
-|g:tselectfiles_filedescription_rx| (a dictionnary patter => funcref), 
-funcref(filename) will be called to retrieve the file's description. 
-This function could be used to extract metadata or selected lines from 
-the file etc. By mapping one record onto one file, you would get some 
-sort of rolodex-like database. See 
-|tselectfiles#FormatVikiMetaDataOrFirstLine()| for an example for 
-viki/deplate (vimscript #861) formatted files.
+|g:tselectfiles#filedescription_rx| (a dictionnary: pattern => 
+function_format_string with one place-holder %s), funcref(filename) will be 
+called to retrieve the file's description. This function could be used to 
+extract metadata or selected lines from the file etc. By mapping one record 
+onto one file, you would get some sort of rolodex-like database. See 
+|tselectfiles#FormatVikiMetaDataOrFirstLine()| for an example for viki/deplate 
+(vimscript #861) formatted files.
 
 
 -----------------------------------------------------------------------
