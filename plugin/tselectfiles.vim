@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-04-16.
-" @Last Change: 2010-08-14.
-" @Revision:    607
+" @Last Change: 2010-09-16.
+" @Revision:    608
 " GetLatestVimScripts: 1865 1 tselectfiles.vim
 
 if &cp || exists("loaded_tselectfiles")
@@ -14,7 +14,7 @@ if !exists('loaded_tlib') || loaded_tlib < 29
     echoerr "tlib >= 0.29 is required"
     finish
 endif
-let loaded_tselectfiles = 10
+let loaded_tselectfiles = 11
 
 
 
