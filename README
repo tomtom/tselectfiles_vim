@@ -1,6 +1,3 @@
-*tselectfiles.txt*  A simplicistic files selector/browser (sort of)
-
-
 This plugin provides a simple file browser. It is not a full blown 
 explorer but can be nevertheless be useful for quickly selecting a few 
 files or renaming them.
@@ -13,7 +10,7 @@ for use as a simple ad-hoc project manager.
 EXAMPLE:
 When opening a file under "~/vimfiles", I set b:tselectfiles_dir 
 to all the relevant directories under "~/vimfiles" and then set 
-b:tselectfile_filter_rx = expand('%%:t:r'). Thus, when I open 
+b:tselectfile_filter_rx = expand('%:t:r'). Thus, when I open 
 "~/vimfiles/plugin/foo.vim", b:tselectfile_filter_rx is "foo", and 
 :TSelectFiles shows all the files under "~/vimfiles" matching "foo".
 
