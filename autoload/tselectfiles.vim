@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-10-15.
-" @Last Change: 2010-09-06.
-" @Revision:    0.0.329
+" @Last Change: 2012-03-13.
+" @Revision:    0.0.348
 
 " call tlog#Log('Load: '. expand('<sfile>')) " vimtlib-sfile
 
@@ -42,6 +42,10 @@ TLet g:tselectfiles#filter_basename = 0
 " Remove prefix from filenames in list.
 " buffer-local, global
 TLet g:tselectfiles#prefix = ''
+
+" If true and the current buffer is under a VCS, use all files in that 
+" repository.
+TLet g:tselectfiles#use_vcs = 1
 
 " Use these dirs (a comma separated list, see |globpath()|). (per window, per buffer, global)
 " TLet g:tselectfiles#dir = ''
@@ -134,13 +138,35 @@ function! s:PrepareSelectFiles(hide)
     " let filter = s:select_files_dir . s:select_files_pattern.pattern
     " TLogVAR filter
     let rv = []
-    for pattern in s:select_files_pattern.pattern
-        " TLogVAR pattern
-        let rv += split(globpath(s:select_files_dir, pattern), '\n')
-        if pattern == '*'
-            let rv += split(globpath(s:select_files_dir, '.'. pattern), '\n')
+    let willglob = 1
+    " echom "DBG PrepareSelectFiles" s:select_files_pattern.mode s:select_files_dir
+    if g:tselectfiles#use_vcs && s:select_files_pattern.mode == 'r'
+        let [vcstype, vcsdir] = tlib#vcs#FindVCS(s:select_files_dir)
+        " TLogVAR vcstype, vcsdir
+        if !empty(vcstype) && has_key(g:tlib#vcs#def[vcstype], 'ls')
+            let files = tlib#vcs#Ls(s:select_files_dir, [vcstype, vcsdir])
+            " TLogVAR files
+            for pattern in s:select_files_pattern.pattern
+                " TLogVAR pattern
+                if pattern == '**'
+                    let pattern_rx = '\V'. escape(pattern, '\') .'\$'
+                    let pattern_rx = substitute(pattern_rx, '\*', '\\.\\{-}', 'g')
+                    let pattern_rx = substitute(pattern_rx, '?', '\\.', 'g')
+                    let rv += filter(copy(files), 'v:val =~ pattern_rx')
+                endif
+            endfor
+            let willglob = 0
         endif
-    endfor
+    endif
+    if willglob
+        for pattern in s:select_files_pattern.pattern
+            " TLogVAR pattern
+            let rv += split(globpath(s:select_files_dir, pattern), '\n')
+            if pattern == '*'
+                let rv += split(globpath(s:select_files_dir, '.'. pattern), '\n')
+            endif
+        endfor
+    endif
     " TLogVAR rv
     if a:hide && !empty(g:tselectfiles#hidden_rx)
         call filter(rv, 'v:val !~ g:tselectfiles#hidden_rx')
@@ -555,7 +581,6 @@ function! tselectfiles#SelectFiles(mode, ...)
     TVarArg 'dir', 'pattern'
     " TLogVAR a:mode, dir, pattern
     let s:select_files_buffer = bufnr('%')
-    let s:select_files_mode   = a:mode
     let s:select_files_prefix = tlib#var#Get('tselectfiles_prefix', 'bg')
     if empty(dir) || dir == '*'
         let s:select_files_dir = tlib#var#Get('tselectfiles_dir', 'bg', escape(expand('%:p:h'), ','))
