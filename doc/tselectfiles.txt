@@ -78,6 +78,7 @@ Contents~
         g:tselectfiles#filedescription_rx ............ |g:tselectfiles#filedescription_rx|
         g:tselectfiles#filter_basename ............... |g:tselectfiles#filter_basename|
         g:tselectfiles#prefix ........................ |g:tselectfiles#prefix|
+        g:tselectfiles#use_vcs ....................... |g:tselectfiles#use_vcs|
         g:tselectfiles#world ......................... |g:tselectfiles#world|
         g:tselectfiles#suffixes ...................... |g:tselectfiles#suffixes|
         g:tselectfiles#hidden_rx ..................... |g:tselectfiles#hidden_rx|
@@ -171,6 +172,11 @@ g:tselectfiles#filter_basename (default: 0)
 g:tselectfiles#prefix          (default: '')
     Remove prefix from filenames in list.
     buffer-local, global
+
+                                                    *g:tselectfiles#use_vcs*
+g:tselectfiles#use_vcs         (default: 1)
+    If true and the current buffer is under a VCS, use all files in that 
+    repository.
 
                                                     *g:tselectfiles#world*
 g:tselectfiles#world           (default: {)
