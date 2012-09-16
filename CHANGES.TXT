@@ -1,0 +1,9 @@
+  - tselectfiles#AgentPreviewFile(): redraw
+  - Convert encoding if the assumed &fenc != &enc
+  - tselectfiles#FormatVikiMetaDataOrFirstLine: Reversed argument order (world is optional)
+  - Renamed variables named g:tselectfiles_* to g:tselectfiles#*
+  - .gitignore
+  - g:tselectfiles#use_vcs
+  MD5 checksum: 41885c7229478d59e37fd7a222767a61
+version: "0.11"
+
