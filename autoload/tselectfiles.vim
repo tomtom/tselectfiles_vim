@@ -135,7 +135,7 @@ endf
 
 function! s:PrepareSelectFiles(hide)
     " TLogVAR a:hide
-    " let filter = s:select_files_dir . s:select_files_pattern.pattern
+    " let filter = s:select_files_dir .'/'. join(s:select_files_pattern.pattern, '|') " DBG
     " TLogVAR filter
     let rv = []
     let willglob = 1
